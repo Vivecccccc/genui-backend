@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from typing import Optional, List
-from controlnet import ControlNetScript
+from .controlnet import ControlNetScript
 
 class InputPayload(BaseModel):
     preset: str
     user_input: str
-    n_output: Optional[int]
+    n_output: Optional[int] = 3
 
 class SdFwdPayload(BaseModel):
     prompt: str

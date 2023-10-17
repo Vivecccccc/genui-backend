@@ -5,12 +5,12 @@ import requests
 import os.path as osp
 from PIL import Image
 from fastapi import FastAPI, HTTPException
-from dataclass.controlnet import *
-from dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayload
+from .dataclass.controlnet import *
+from .dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayload
 
-REF_IMAGES_DIR = "../static"
+REF_IMAGES_DIR = "static"
 REF_IMAGES = {
-    f"ref_{i}": [osp.join(REF_IMAGES_DIR, f"ref_{i}_{j}.jpg") for j in range(4)] for i in range(2)
+    f"{i+1}": [osp.join(REF_IMAGES_DIR, f"ref_{i+1}_{j}.jpg") for j in range(5)] for i in range(2)
 }
 
 DEFAULT_POS_PROMPT_LIST = ["(masterpiece, best quality, highly detailed, absurdres)", 
@@ -71,12 +71,15 @@ def _fwd_sd(url: str, payloads: List[SdFwdPaylodWithImage]):
     return imgs
 
 def _process_ref_img(ref_img_file):
-    with open(ref_img_file, 'rb') as f:
-        ref_img = Image.open(f)
-    width, height = _process_img_wh(ref_img)
-    buffered = io.BytesIO()
-    ref_img.save(buffered, format="JPEG")
-    ref_img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    try:
+        with open(ref_img_file, 'rb') as f:
+            ref_img = Image.open(f)
+            width, height = _process_img_wh(ref_img)
+            buffered = io.BytesIO()
+            ref_img.save(buffered, format="JPEG")
+            ref_img_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    except:
+        raise HTTPException(status_code=300, detail="error processing reference")
     return ref_img_b64, width, height
 
 def _process_img_wh(img: Image):
@@ -93,5 +96,5 @@ def _process_img_wh(img: Image):
 def _config_ctrlnet(ref_img_b64, n_images=1):
     weight_choices = [round(random.uniform(0.6, 1.6), 2) for i in range(n_images)]
     controlnet_args = [ControlNetArgs(input_image=ref_img_b64, weight=w) for w in weight_choices]
-    controlnets = [ControlNet(args=[arg]) for arg in controlnet_args] 
+    controlnets = [ControlNetScript(controlnet=ControlNet(args=[arg])) for arg in controlnet_args] 
     return controlnets

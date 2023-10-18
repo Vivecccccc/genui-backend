@@ -5,8 +5,8 @@ import requests
 import os.path as osp
 from PIL import Image
 from fastapi import FastAPI, HTTPException
-from .dataclass.controlnet import *
-from .dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayload
+from dataclass.controlnet import *
+from dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayload
 
 REF_IMAGES_DIR = "static"
 REF_IMAGES = {

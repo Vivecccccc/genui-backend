@@ -5,6 +5,7 @@ import requests
 import os.path as osp
 from PIL import Image
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from .dataclass.controlnet import *
 from .dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayload
 
@@ -41,6 +42,13 @@ DEFAULT_NEG_PROMPT_LIST = ["lowres",
 ENDPOINT_URL = 'http://127.0.0.1:7860/sdapi/v1/txt2img'
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/generate")
 async def generate(payload: InputPayload):

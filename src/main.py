@@ -11,7 +11,7 @@ from .dataclass.payloads import InputPayload, SdFwdPaylodWithImage, OutputPayloa
 
 REF_IMAGES_DIR = "static"
 REF_IMAGES = {
-    f"{i+1}": [osp.join(REF_IMAGES_DIR, f"ref_{i+1}_{j}.jpg") for j in range(5)] for i in range(2)
+    f"{i+1}": [osp.join(REF_IMAGES_DIR, f"ref_{i+1}_{j}.jpg") for j in range(5)] for i in range(3)
 }
 
 DEFAULT_POS_PROMPT_LIST = ["(masterpiece, best quality, highly detailed, absurdres)", 
